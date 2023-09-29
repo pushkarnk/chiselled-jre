@@ -35,6 +35,8 @@ git clone --branch ${VERSION} ${PDFBOX_REPO} || \
      git checkout ${VERSION} &&
      git reset --hard)
 
+chmod -R 755 ${TEST_DIR}/${APP}
+
 # build and tests with chiselled jre
 docker run \
     ${DOCKER_OPTS} \

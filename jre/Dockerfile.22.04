@@ -15,10 +15,13 @@ RUN go generate internal/deb/version.go \
 FROM public.ecr.aws/ubuntu/ubuntu:$UBUNTU_RELEASE@sha256:da15d4a10e27ece78bcab8e36d55762d086238ea05f033ccab108d99af3db68e AS builder
 SHELL ["/bin/bash", "-oeux", "pipefail", "-c"]
 RUN apt-get update \
+    && apt-get install -y software-properties-common \
+    && add-apt-repository ppa:openjdk-r/ppa \
+    && apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y ca-certificates \
         ca-certificates-java \
         binutils \
-        openjdk-17-jdk \
+        openjdk-21-jdk \
     && apt-get clean -y \
     && rm -rf /var/lib/apt/lists/*
 COPY --from=chisel /opt/chisel/chisel /usr/bin/
@@ -29,7 +32,7 @@ RUN jlink --no-header-files --no-man-pages --strip-debug \
     --add-modules \
 java.base,java.datatransfer,java.desktop,java.instrument,\
 java.logging,java.management,java.management.rmi,java.naming,\
-java.prefs,java.rmi,java.security.sasl,java.xml,jdk.incubator.foreign,\
+java.prefs,java.rmi,java.security.sasl,java.xml,\
 jdk.incubator.vector,jdk.internal.vm.ci,jdk.jfr,jdk.management,\
 jdk.management.jfr,jdk.management.agent,jdk.net,jdk.nio.mapmode,\
 jdk.sctp,jdk.unsupported,jdk.naming.rmi,java.se,java.net.http,\

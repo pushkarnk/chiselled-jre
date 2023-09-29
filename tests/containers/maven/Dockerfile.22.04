@@ -1,6 +1,8 @@
-ARG BASE_IMAGE=ubuntu/jre:17_edge
+ARG BASE_IMAGE=ubuntu/jre:21_test
 ARG MAVEN_IMAGE=maven:3.9.4-eclipse-temurin-17
+ARG JDK21_IMAGE=maven:3-amazoncorretto-21-al2023
 FROM $MAVEN_IMAGE as builder
+FROM $JDK21_IMAGE as jdk21
 
 FROM $BASE_IMAGE
 
@@ -15,17 +17,18 @@ COPY --from=builder /usr/share/maven /usr/share/maven
 ENV JAVA_HOME=/opt/java
 
 # Add javac compiler for maven (it always recompiles package-info.java)
-COPY --from=builder /opt/java/openjdk/bin/javac \
+
+COPY --from=jdk21 /lib/jvm/java-21/bin/javac \
     /opt/java/bin/
 # compatibility signatures
-COPY --from=builder /opt/java/openjdk/lib/ct.sym \
+COPY --from=jdk21 /lib/jvm/java-21/lib/ct.sym \
     /opt/java/lib/
 # additional jars
-COPY --from=builder /opt/java/openjdk/lib/*.jar \
+COPY --from=jdk21 /lib/jvm/java-21/lib/jrt-fs.jar \
     /opt/java/lib/
 
 # copy modules
-COPY --from=builder /opt/java/openjdk/lib/modules \
+COPY --from=jdk21 /lib/jvm/java-21/lib/modules \
     /opt/java/lib/
 
 ENTRYPOINT [ "/usr/share/maven/bin/mvn" ]

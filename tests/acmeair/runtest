@@ -31,6 +31,8 @@ git clone --branch ${TAG} ${ACMEAIR_REPO} || \
     (cd ${PROJECT} && \
      git checkout ${TAG})
 
+chmod -R 755 ${TEST_DIR}/${PROJECT}
+
 # build and tests with chiselled jre
 docker run \
     ${DOCKER_OPTS} \

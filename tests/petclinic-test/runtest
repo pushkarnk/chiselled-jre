@@ -28,6 +28,8 @@ git clone --branch ${PETCLINIC_TAG} ${PETCLINIC_REPO} || \
      git checkout ${PETCLINIC_TAG} &&
      git reset --hard)
 
+chmod -R 755 ${TEST_DIR}/${PROJECT}
+
 # We should replace Temurin with our dev container
 DOCKER_OPTS="--rm  \
     --tmpfs /tmp:exec \
